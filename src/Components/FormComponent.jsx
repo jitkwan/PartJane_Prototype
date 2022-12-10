@@ -1,6 +1,17 @@
-import './FormComponent.css';
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import {                    
+    Typography,
+    Box,
+    Button,
+    TextField,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
+    IconButton
+  } from "@mui/material";
+  import CloseIcon from '@mui/icons-material/Close';
 
 
 
@@ -19,11 +30,6 @@ const FormComponent1 = (props) =>{
     const [errorDuration,setErrorDuration] = useState('')
     const [errorDate,setErrorDate] = useState('')
 
-//state declare to change color if user don't put the information
-    // const [activityNameColor,setActivityNameColor] = useState('')
-    // const [activityTypeColor,setActivityTypeColor] = useState('')
-    // const [durationColor,setDurationColor] = useState('')
-    // const [dateColor,setDateColor] = useState('')
 
     //validate part
     const submitData = (e) =>{
@@ -33,21 +39,21 @@ const FormComponent1 = (props) =>{
             setActivityName(activityName)
             setErrorActivityName('')
         }else{
-            setErrorActivityName('Please specific your activity name')
+            setErrorActivityName('Required your activity name')
         }
 
-        if(activityType !== '' && activityType !== 'Please Select'){
+        if(activityType !== ''){
             setActivityType(activityType)
             setErrorActivityType('')
         }else{
-            setErrorActivityType('Please select the activity type')
+            setErrorActivityType('Required the activity type')
         }
 
         if(duration >= 10 ){
             setDuration(duration)
             setErrorDuration('')
         }else{
-            setErrorDuration('Please specific time and you should excercise at least 10 minutes')
+            setErrorDuration('Required time at least 10 minutes')
         }
 
         if(date !== ''){
@@ -57,7 +63,7 @@ const FormComponent1 = (props) =>{
             setErrorDate('Date is required')
         }
 
-        if(activityName.length>0 && activityType !=='Please Select'&& duration >= 10 && date !== ''){
+        if(activityName.length>0 && activityType !==''&& duration >= 10 && date !== ''){
             const newCard = {
                 id: uuidv4(),
                 activityName: activityName,
@@ -70,7 +76,7 @@ const FormComponent1 = (props) =>{
             props.onAddNewCard(newCard)
             
             setActivityName('')
-            setActivityType('Please Select')
+            setActivityType('')
             setDescription('')
             setDuration('')
             setDate('')
@@ -83,57 +89,65 @@ const FormComponent1 = (props) =>{
 
 
     return(
-        <div className="container">
-            <form className="form" onSubmit={submitData} >
-                <h2>Setting An Activity</h2>
+        <div>
+            <form onSubmit={submitData} >
+                <Box
+                display="flex" 
+                maxWidth={450} 
+                flexDirection={'column'} 
+                boxShadow = "10px 10px 20px #ccc"
+                padding ={3}
+                margin='auto'
+                marginTop={6}
+                borderRadius = {5}>
+                <Box display="flex" marginLeft = 'auto'>
+                <IconButton  >
+                    <CloseIcon />
+                </IconButton>
+                </Box>
+                <Box 
+                display="flex"  
+                flexDirection={'column'} 
+                alignItems='center' 
+                justifyContent={'center'}
+                >
+                    <Typography fontWeight={"bold"} variant='h4' padding={1}  textAlign ='center'>Create Your Activity</Typography>
 {/* for user to put Name of Activity */}
-                <div className= 'form-control'>
-                    <label>Name Your Activity</label>
-                    <input 
-                    type = 'text' 
-                    placeholder = 'Specific your activity name' 
-                    value={activityName} onChange = {(e) => setActivityName(e.target.value)}/>
+                    <TextField label="Activity's name" type = 'text' placeholder="Activity's name" margin='normal' value={activityName} onChange = {(e) => setActivityName(e.target.value)}/>
                     <small className='text-red-700'>{errorActivityName}</small>
-                </div>
+
 {/* for user to select type of Activity */}
-                <div>
-                    <label>Activity Type</label>
-                    <select className="form-control" value={activityType} onChange = {(e) =>setActivityType(e.target.value)} >
-                        <option value = 'Please Select'>Please Select</option>
-                        <option value = 'Run'>Run</option>
-                        <option value = 'Bicycle Ride'>Bicycle Ride</option>
-                        <option value = 'Swim'>Swim</option>
-                        <option value = 'Walk'>Walk</option>
-                        <option value = 'Hike'>Hike</option>
-                    </select>
+                    <Box sx={{ minWidth: 220 }} marginTop={1}>
+                        <FormControl fullWidth>
+                            <InputLabel >Activity Type</InputLabel>
+                            <Select 
+                            value={activityType}
+                            label="Activity Type"
+                            onChange= {(e) =>setActivityType(e.target.value)}
+                            >
+                            <MenuItem value={"Run"}>Run</MenuItem>
+                            <MenuItem value={"Walk"}>Walk</MenuItem>
+                            <MenuItem value={"Bicycle"}>Bicycle</MenuItem>
+                            <MenuItem value={"Hike"}>Hike</MenuItem>
+                            <MenuItem value={"Swim"}>Swim</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
                     <small className='text-red-700'>{errorActivityType}</small>
-                </div>
 {/* for user to describe the Activity */}
-                <div className= 'form-control'>
-                    <label>Description</label>
-                    <textarea type = 'text' placeholder = 'Describe your activity...' value={description} onChange = {(e) => setDescription(e.target.value)} cols="30" rows="5"></textarea>
-                </div>
+                    <TextField sx={{ minWidth: 220 }} label="Description" type = 'text' multiline Rows={4} placeholder='Description' margin='normal' value={description} onChange = {(e) => setDescription(e.target.value)}/>
 {/* for user to set duration */}
-                <div className= 'form-control'>
-                    <label>Duration(between 10 - 360 minutes)</label>
-                    <input type ='number' placeholder = "Specific activity's time " value={duration} onChange = {(e) => setDuration(e.target.value)}/>
+                    <TextField label="Time" type ='number' placeholder='time' margin='normal' value={duration} onChange = {(e) => setDuration(e.target.value)}/>
                     <small className='text-red-700'>{errorDuration}</small>
-                </div>
+            
 {/* for user to set date */}
-                <div className= 'form-control'>
-                    <label>Date</label>
-                    <input type ='date' value={date} onChange = {(e)=> setDate(e.target.value)}/>
+                    <TextField sx={{ minWidth: 220 }}  type="date" placeholder='Date' margin='normal' value={date} onChange = {(e)=> setDate(e.target.value)}/>
                     <small className='text-red-700'>{errorDate}</small>
-                </div>
-                <button type='submit'>submit</button>
-                
-            </form>
-
-
-        </div>
-    )
-
-}
-
-
+                    <Button type='submit' variant='contained' sx={{borderRadius:3,marginTop:3}} color="primary">Create</Button>
+                    </Box>
+            </Box>
+        </form>
+    </div>
+     )
+    }
 export default FormComponent1
